@@ -4,11 +4,17 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 public class BillCalculatorApp extends JFrame {
-    private JRadioButton waterBillRadio, electricBillRadio;
-    private JTextField lastMeterField, currentMeterField, unitAmountField, resultField, totalRentalField;
-    private JComboBox<String> roomTypeComboBox;
-    private JButton calculateButton, resetButton;
-    private JProgressBar progressBar;
+    JRadioButton waterBillRadio;
+    JRadioButton electricBillRadio;
+    JTextField lastMeterField;
+    JTextField currentMeterField;
+    JTextField unitAmountField;
+    JTextField resultField;
+    JTextField totalRentalField;
+    JComboBox<String> roomTypeComboBox;
+    JButton calculateButton;
+    JButton resetButton;
+    JProgressBar progressBar;
 
     public BillCalculatorApp() {
         setTitle("Bill Calculator");

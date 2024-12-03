@@ -1,71 +1,87 @@
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 
-class BillCalculationTest {
+class BillCalculatorAppTest {
 
     @Test
-    void testWaterBillCalculation() {
-        
-        int lastMeter = 200;
-        int currentMeter = 250;
-        int ratePerUnit = 5; 
+    void testCalculateWaterBillSingleRoom() {
+        BillCalculatorApp app = new BillCalculatorApp();
 
-        // Act
-        int units = currentMeter - lastMeter;
-        int total = units * ratePerUnit;
+        // กำหนดค่า input
+        app.lastMeterField.setText("100");
+        app.currentMeterField.setText("150");
+        app.waterBillRadio.setSelected(true);
+        app.roomTypeComboBox.setSelectedItem("Single");
 
-        // Assert
-        assertEquals(250, units, "The number of units calculated is incorrect.");
-        assertEquals(1250, total, "The total water bill calculation is incorrect.");
+        // เรียกใช้ปุ่มคำนวณ
+        app.calculateButton.doClick();
+
+        // ตรวจสอบค่า output
+        assertEquals("50", app.unitAmountField.getText()); // หน่วยที่ใช้
+        assertEquals("250", app.resultField.getText()); // ค่าบิลน้ำ
+        assertEquals("1750", app.totalRentalField.getText()); // ผลรวมทั้งหมด
     }
 
     @Test
-    void testElectricBillCalculation() {
-        
-        int lastMeter = 300;
-        int currentMeter = 400;
-        int ratePerUnit = 6; 
+    void testCalculateElectricBillDoubleRoom() {
+        BillCalculatorApp app = new BillCalculatorApp();
 
-        
-        int units = currentMeter - lastMeter;
-        int total = units * ratePerUnit;
+        // กำหนดค่า input
+        app.lastMeterField.setText("200");
+        app.currentMeterField.setText("300");
+        app.electricBillRadio.setSelected(true);
+        app.roomTypeComboBox.setSelectedItem("Double");
 
-        assertEquals(100, units, "The number of units calculated is incorrect.");
-        assertEquals(600, total, "The total electric bill calculation is incorrect.");
+        // เรียกใช้ปุ่มคำนวณ
+        app.calculateButton.doClick();
+
+        // ตรวจสอบค่า output
+        assertEquals("100", app.unitAmountField.getText()); // หน่วยที่ใช้
+        assertEquals("600", app.resultField.getText()); // ค่าบิลไฟฟ้า
+        assertEquals("2600", app.totalRentalField.getText()); // ผลรวมทั้งหมด
     }
 
     @Test
-    void testInvalidMeterValues() {
-    
-        int lastMeter = 300;
-        int currentMeter = 200;
+    void testInvalidInput() {
+        BillCalculatorApp app = new BillCalculatorApp();
 
-    
-        assertThrows(IllegalArgumentException.class, () -> {
-            if (currentMeter < lastMeter) {
-                throw new IllegalArgumentException("Error: Current Meter must be greater than Last Meter");
-            }
-        });
-    }
-    
-    @Test
-    void testNoBillTypeSelected() {
-        boolean isBillTypeSelected = false;
+        // กำหนดค่า input ที่ไม่ถูกต้อง
+        app.lastMeterField.setText("200");
+        app.currentMeterField.setText("150");
+        app.waterBillRadio.setSelected(true);
 
-        assertFalse(isBillTypeSelected, "Bill type must be selected.");
+        // เรียกใช้ปุ่มคำนวณ
+        app.calculateButton.doClick();
+
+        // ตรวจสอบว่าไม่มีการอัปเดตค่าใด ๆ
+        assertEquals("Waiting", app.unitAmountField.getText());
+        assertEquals("", app.resultField.getText());
+        assertEquals("", app.totalRentalField.getText());
     }
 
     @Test
-    void testResetForm() {
+    void testResetFunctionality() {
+        BillCalculatorApp app = new BillCalculatorApp();
 
-        int lastMeter = 100;
-        int currentMeter = 150;
+        // กำหนดค่า input
+        app.lastMeterField.setText("100");
+        app.currentMeterField.setText("200");
+        app.waterBillRadio.setSelected(false);
+        app.roomTypeComboBox.setSelectedItem("Single");
+        app.calculateButton.doClick();
 
-    
-        lastMeter = 0;
-        currentMeter = 0;
+        // กดปุ่มรีเซ็ต
+        app.resetButton.doClick();
 
-        assertEquals(0, lastMeter, "The last meter should be reset to 0.");
-        assertEquals(0, currentMeter, "The current meter should be reset to 0.");
+        // ตรวจสอบค่า output
+        assertEquals("", app.lastMeterField.getText());
+        assertEquals("", app.currentMeterField.getText());
+        assertEquals("Waiting", app.unitAmountField.getText());
+        assertEquals("", app.resultField.getText());
+        assertEquals("", app.totalRentalField.getText());
+        assertEquals(0, app.progressBar.getValue());
+        assertFalse(app.waterBillRadio.isSelected());
+        assertFalse(app.electricBillRadio.isSelected());
+        assertEquals(0, app.roomTypeComboBox.getSelectedIndex());
     }
 }
